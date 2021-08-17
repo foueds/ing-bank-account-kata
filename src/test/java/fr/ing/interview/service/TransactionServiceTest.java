@@ -1,5 +1,6 @@
 package fr.ing.interview.service;
 
+import static fr.ing.interview.service.TransactionService.DELIMITER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import fr.ing.interview.model.Account;
@@ -60,5 +61,16 @@ class TransactionServiceTest {
         //THEN
         assertEquals(TransactionStatus.REFUSED, operationCustomer.getOperationStatus());
         assertEquals(BigDecimal.valueOf(100), customer.getAccount().getBalance());
+    }
+
+    @Test
+    void should_display_customer_account_balance() {
+        //WHEN
+        operationCustomer.displayCurrentAccountBalance(customer);
+        String expectedCustomerAccountBalance =
+              "User" + DELIMITER + "Num Account" + DELIMITER + "Balance" + "\n" + "John" + DELIMITER + "1" + DELIMITER + "100";
+
+        //THEN
+        assertEquals(expectedCustomerAccountBalance, customer.getAccount().getDetailedBalance());
     }
 }
