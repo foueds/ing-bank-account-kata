@@ -1,6 +1,7 @@
 package fr.ing.interview.service;
 
 import static fr.ing.interview.service.TransactionService.DELIMITER;
+import static fr.ing.interview.service.TransactionService.USER_ACCOUNT_TRANSACTION_HISTORY_HEADER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import fr.ing.interview.model.Account;
@@ -26,7 +27,7 @@ class TransactionServiceTest {
     @Test
     void should_accept_deposit_money_from_account_when_amount_superior_to_minimum_deposit_allowed() {
         //WHEN
-        operationCustomer.depositAccount(customer, BigDecimal.valueOf(1200));
+        operationCustomer.depositAccount(customer, BigDecimal.valueOf(1200), 1);
 
         //THEN
         assertEquals(TransactionStatus.ACCEPTED, operationCustomer.getOperationStatus());
@@ -36,7 +37,7 @@ class TransactionServiceTest {
     @Test
     void should_refuse_deposit_money_from_account_when_amount_superior_to_minimum_deposit_allowed() {
         //WHEN
-        operationCustomer.depositAccount(customer, BigDecimal.valueOf(0.01));
+        operationCustomer.depositAccount(customer, BigDecimal.valueOf(0.01), 1);
 
         //THEN
         assertEquals(TransactionStatus.REFUSED, operationCustomer.getOperationStatus());
@@ -46,7 +47,7 @@ class TransactionServiceTest {
     @Test
     void should_accept_withdraw_money_from_account_when_no_overdraft_used() {
         //WHEN
-        operationCustomer.withdrawAccount(customer, BigDecimal.valueOf(70));
+        operationCustomer.withdrawAccount(customer, BigDecimal.valueOf(70), 1);
 
         //THEN
         assertEquals(TransactionStatus.ACCEPTED, operationCustomer.getOperationStatus());
@@ -56,7 +57,7 @@ class TransactionServiceTest {
     @Test
     void should_refuse_withdraw_money_from_account_when_no_overdraft_used() {
         //WHEN
-        operationCustomer.withdrawAccount(customer, BigDecimal.valueOf(300));
+        operationCustomer.withdrawAccount(customer, BigDecimal.valueOf(300), 1);
 
         //THEN
         assertEquals(TransactionStatus.REFUSED, operationCustomer.getOperationStatus());
@@ -73,4 +74,27 @@ class TransactionServiceTest {
         //THEN
         assertEquals(expectedCustomerAccountBalance, customer.getAccount().getDetailedBalance());
     }
+
+    @Test
+    void should_display_customer_account_transaction_history() {
+
+        operationCustomer.depositAccount(customer, BigDecimal.valueOf(1200), 1);
+        operationCustomer.withdrawAccount(customer, BigDecimal.valueOf(70), 2);
+
+        String expectedTransactionHistory = USER_ACCOUNT_TRANSACTION_HISTORY_HEADER
+              + "\n"
+              + "John" + DELIMITER + "1" + DELIMITER + "DEPOSIT"+ DELIMITER + "1200"
+              + "\n"
+              + "John" + DELIMITER + "1" + DELIMITER + "WITHDRAW"+ DELIMITER + "70"
+              + "\n";
+
+        //WHEN
+        String transactionHistory = operationCustomer.displayAccountTransactionHistory(customer);
+
+        //THEN
+        assertEquals(2, customer.getAccount().getTransactionDetails().size());
+        assertEquals(expectedTransactionHistory, transactionHistory);
+
+    }
+
 }

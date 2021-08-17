@@ -1,12 +1,15 @@
 package fr.ing.interview.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Account {
 
     private int id;
     private BigDecimal balance;
     private String detailedBalance;
+    private List<TransactionDetail> transactionDetails = new ArrayList<>();
 
     public Account(int id, BigDecimal balance) {
         this.id = id;
@@ -35,5 +38,13 @@ public class Account {
 
     public void setDetailedBalance(String detailedBalance) {
         this.detailedBalance = detailedBalance;
+    }
+
+    public List<TransactionDetail> getTransactionDetails() {
+        return transactionDetails;
+    }
+
+    public void setTransactionDetails(List<TransactionDetail> transactionDetails) {
+        this.transactionDetails = transactionDetails;
     }
 }
