@@ -41,4 +41,24 @@ class TransactionServiceTest {
         assertEquals(TransactionStatus.REFUSED, operationCustomer.getOperationStatus());
         assertEquals(BigDecimal.valueOf(100), customer.getAccount().getBalance());
     }
+
+    @Test
+    void should_accept_withdraw_money_from_account_when_no_overdraft_used() {
+        //WHEN
+        operationCustomer.withdrawAccount(customer, BigDecimal.valueOf(70));
+
+        //THEN
+        assertEquals(TransactionStatus.ACCEPTED, operationCustomer.getOperationStatus());
+        assertEquals(BigDecimal.valueOf(30), customer.getAccount().getBalance());
+    }
+
+    @Test
+    void should_refuse_withdraw_money_from_account_when_no_overdraft_used() {
+        //WHEN
+        operationCustomer.withdrawAccount(customer, BigDecimal.valueOf(300));
+
+        //THEN
+        assertEquals(TransactionStatus.REFUSED, operationCustomer.getOperationStatus());
+        assertEquals(BigDecimal.valueOf(100), customer.getAccount().getBalance());
+    }
 }

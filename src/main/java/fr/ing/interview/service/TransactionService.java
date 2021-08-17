@@ -21,6 +21,18 @@ public class TransactionService {
         }
     }
 
+    public void withdrawAccount(Customer customer, BigDecimal amount) {
+        Account account = customer.getAccount();
+        BigDecimal newBalance = account.getBalance().subtract(amount);
+        if (newBalance.compareTo(BigDecimal.valueOf(0)) > 0) {
+            account.setBalance(newBalance);
+            setOperationStatus(TransactionStatus.ACCEPTED);
+        } else {
+            setOperationStatus(TransactionStatus.REFUSED);
+        }
+    }
+
+
     public TransactionStatus getOperationStatus() {
         return operationStatus;
     }
